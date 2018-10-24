@@ -145,6 +145,7 @@ class Bot extends BaseBot {
         this.waitAnswer();
 
         let audioName = this.getSlot('audioname');
+        console.log(audioName);
         if (audioName) {
             let audio = this.getDetailBy('audio', 'title', audioName);
             let directives = this.getAudioPlay(audio.id);
@@ -153,8 +154,8 @@ class Bot extends BaseBot {
                     directives: directives
                 };
             }
-            let speech = '没有找到你要播放的视频';
-            let hint = new Hint(['第一个', '我想听告白气球']);
+            let speech = '没有找到你要播放的音频';
+            let hint = new Hint(['第一个', '我想听告白']);
             let template = this.getAudioCard();
             return {
                 outputSpeech: speech,
@@ -225,6 +226,7 @@ class Bot extends BaseBot {
     backIntent() {
         this.waitAnswer();
         let back = this.getSlot('back');
+        console.log(back);
         if (!back) {
             back = 'home';
         }
@@ -315,6 +317,7 @@ class Bot extends BaseBot {
     ScreenClickedEvent() {
         this.waitAnswer();
         let data = this.request.getData();
+        console.log(index);
         let url = data.request.token ? data.request.token : '';
         if (!url) {
             this.setExpectSpeech(false);
