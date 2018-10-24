@@ -104,6 +104,7 @@ class Bot extends BaseBot {
         this.waitAnswer();
 
         let videoName = this.getSlot('videoname');
+        console.log("video intent");
         console.log(videoName);
         if (videoName) {
             let video = this.getDetailBy('video', 'title', videoName);
@@ -143,7 +144,7 @@ class Bot extends BaseBot {
      */
     audioIntent() {
         this.waitAnswer();
-
+        console.log("audio intent");
         let audioName = this.getSlot('audioname');
         console.log(audioName);
         if (audioName) {
