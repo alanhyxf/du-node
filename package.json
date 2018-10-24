@@ -1,0 +1,23 @@
+{
+  "name": "du-node",
+  "version": "1.0.0",
+  "description": "## 模板样例演示",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alanhyxf/du-node.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/alanhyxf/du-node/issues"
+  },
+  "homepage": "https://github.com/alanhyxf/du-node#readme",
+  "dependencies": {
+    "bot-sdk": "^1.2.6",
+    "express": "^4.16.4"
+  }
+}
