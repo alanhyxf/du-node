@@ -1,3 +1,3 @@
 # du-node
 
-dueros sdk
+dueros sdk to develop bot
