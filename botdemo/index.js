@@ -8,7 +8,7 @@
 
 const express = require('express');
 
-const InquiryBot = require('./Bot');
+const Bot = require('./Bot');
 let app = express();
 
 // 探活请求
@@ -27,7 +27,7 @@ app.post('/', (req, res) => {
 
 
     req.on('end', () => {
-        let b = new InquiryBot(JSON.parse(req.rawBody));
+        let b = new Bot(JSON.parse(req.rawBody));
 
         
         // 开启签名认证

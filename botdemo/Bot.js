@@ -2,7 +2,7 @@
   * @file js-sdk bot demo
   * @author yelvye@baidu.com
   */
-const BaseBot = require('../lib/Bot');
+const BaseBot = require('bot-sdk/lib/Bot');
 const Hint = BaseBot.Directive.Display.Hint;
 const RenderTemplate = BaseBot.Directive.Display.RenderTemplate;
 const ListTemplate1 = BaseBot.Directive.Display.Template.ListTemplate1;
@@ -37,6 +37,7 @@ class Bot extends BaseBot {
      */
     constructor(postData) {
         super(postData);
+        console.log(this.sessionEndedRequest);
         //  意图1:处理技能启动
         this.addLaunchHandler(this.launch);
         //  意图2：处理技能结束
@@ -103,8 +104,11 @@ class Bot extends BaseBot {
         this.waitAnswer();
 
         let videoName = this.getSlot('videoname');
+        console.log("video intent");
+        console.log(videoName);
         if (videoName) {
             let video = this.getDetailBy('video', 'title', videoName);
+              console.log(video.title);
             let directives = this.getVideoPlay(video.id);
             if (directives) {
                 return {
@@ -141,18 +145,20 @@ class Bot extends BaseBot {
      */
     audioIntent() {
         this.waitAnswer();
-
+        console.log("audio intent");
         let audioName = this.getSlot('audioname');
+        console.log(audioName);
         if (audioName) {
             let audio = this.getDetailBy('audio', 'title', audioName);
+             console.log(audio.id);
             let directives = this.getAudioPlay(audio.id);
             if (directives) {
                 return {
                     directives: directives
                 };
             }
-            let speech = '没有找到你要播放的视频';
-            let hint = new Hint(['第一个', '我想听告白气球']);
+            let speech = '没有找到你要播放的音频';
+            let hint = new Hint(['第一个', '我想听告白']);
             let template = this.getAudioCard();
             return {
                 outputSpeech: speech,
@@ -185,6 +191,7 @@ class Bot extends BaseBot {
         let token = context.template.token ? context.template.token : '';
         let page = token.page ? token.page : '';
         let index = this.getSlot('index');
+        console.log(index);
         //  index从1开始
         //  let audioPlayerContext = this.request.getAudioPlayerContext();
         //  let videoPlayerContext = this.request.getVideoPlayerContext();
@@ -222,6 +229,7 @@ class Bot extends BaseBot {
     backIntent() {
         this.waitAnswer();
         let back = this.getSlot('back');
+        console.log(back);
         if (!back) {
             back = 'home';
         }
@@ -251,14 +259,14 @@ class Bot extends BaseBot {
     pauseIntent() {
         this.waitAnswer();
         this.setExpectSpeech(false);
-
+        console.log("pause now");
         let audioPlayerContext = this.request.getAudioPlayerContext();
         let videoPlayerContext = this.request.getVideoPlayerContext();
 
         //  let audioToken = audioPlayerContext['token'] ? audioPlayerContext['token'] : '';
         //  let videoToken = videoPlayerContext['token'] ? videoPlayerContext['token'] : '';
 
-
+        console.log(audioPlayerContext);
         if (audioPlayerContext) {
             let directive = new AudioStop();
             return {
@@ -281,7 +289,7 @@ class Bot extends BaseBot {
      */
     continueIntent() {
         this.waitAnswer();
-
+        console.log("continue now");
         let audioPlayerContext = this.request.getAudioPlayerContext();
         let videoPlayerContext = this.request.getVideoPlayerContext();
 
@@ -311,7 +319,9 @@ class Bot extends BaseBot {
      */
     ScreenClickedEvent() {
         this.waitAnswer();
+        console.log("screen click now");
         let data = this.request.getData();
+        console.log(index);
         let url = data.request.token ? data.request.token : '';
         if (!url) {
             this.setExpectSpeech(false);
@@ -351,6 +361,7 @@ class Bot extends BaseBot {
      */
     audioPlaybackFinished(event) {
         this.waitAnswer();
+        console.log("audio finish now");
         this.setExpectSpeech(false);
         let audioToken = event.token ? event.token : '';
         if (audioToken.id && audioToken.index) {
@@ -371,6 +382,7 @@ class Bot extends BaseBot {
      */
     videoPlaybackNearlyFinished(event) {
         this.waitAnswer();
+        console.log("video nearly finished now");
         this.setExpectSpeech(false);
         let videoToken = event.token ? event.token : '';
 
@@ -388,6 +400,7 @@ class Bot extends BaseBot {
      * 默认事件
      */
     defaultEvent() {
+        console.log("default event now");
         this.waitAnswer();
         this.setExpectSpeech(false);
     }
@@ -398,7 +411,7 @@ class Bot extends BaseBot {
      * @return {RenderTemplate}
      */
     getHomeCard() {
-
+        console.log("get home card");
         let videoToken = {
             page: 'home',
             item: 'video'
@@ -434,6 +447,7 @@ class Bot extends BaseBot {
 
         //  定义RenderTemplate指令
         let directive = new RenderTemplate(listTemplate);
+        console.log(directive)
         return directive;
     }
 
@@ -443,6 +457,7 @@ class Bot extends BaseBot {
      * @return {Object}
      */
     getVideoCard() {
+        console.log("get video card");
         let listTemplate = new ListTemplate1();
         //  设置token
         let tokenArr = {
@@ -485,6 +500,7 @@ class Bot extends BaseBot {
      * @return {Object}
      */
     getAudioCard() {
+        console.log("get audio card");
         let listTemplate = new ListTemplate1();
         //  设置模板token
         let tokenArr = {
@@ -528,6 +544,7 @@ class Bot extends BaseBot {
      * @return {Object}
      */
     getPlayList(type) {
+        console.log("get play list");
         let list = require('./data');
 
         if (type === 'video') {
@@ -552,7 +569,7 @@ class Bot extends BaseBot {
      */
     getVideoPlay(id) {
         this.setExpectSpeech(false);
-
+        console.log("get video play id");
         let token = {
             type: 'video',
             id: id
@@ -564,7 +581,7 @@ class Bot extends BaseBot {
             let directive = new VideoPlay(video.url, 'REPLACE_ALL');
             directive.setReportIntervalInMs(10000);
             directive.setReportDelayInMs(10000);
-            directive.setOffsetInMilliSeconds(0);
+            //directive.setOffsetInMilliSeconds(0);
             directive.setToken(this.genToken(token));
 
             let hint = new Hint(['返回视频模板']);
@@ -581,6 +598,8 @@ class Bot extends BaseBot {
      * @return {Array}
      */
     getAudioPlay(id) {
+         console.log("get audio play id");
+         console.log(id);
         this.setExpectSpeech(false);
 
         let token = {
@@ -592,7 +611,7 @@ class Bot extends BaseBot {
         let directives = [];
         if (audio) {
             let directive = new AudioPlay(audio.url, 'REPLACE_ALL');
-            directive.setOffsetInMilliSeconds(0);
+            //directive.setOffsetInMilliSeconds(0);
             let playerInfo = new PlayerInfo();
             let playpause = new PlayPauseButton();
             let previous = new PreviousButton();
@@ -653,6 +672,7 @@ class Bot extends BaseBot {
      */
     audioPlayStarted() {
         this.waitAnswer();
+         console.log("audio play start ");
     }
 
     //  视频开始播放事件
@@ -661,6 +681,7 @@ class Bot extends BaseBot {
      */
     videoPlayStarted() {
         this.waitAnswer();
+         console.log("video play start ");
     }
 
     /**
@@ -679,7 +700,9 @@ class Bot extends BaseBot {
      * sessionEndedRequest处理
      */
     sessionEndedRequest() {
+         console.log("session end ");
         this.endDialog();
+
     }
 }
 
