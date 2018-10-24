@@ -37,6 +37,7 @@ class Bot extends BaseBot {
      */
     constructor(postData) {
         super(postData);
+        console.log(this.sessionEndedRequest);
         //  意图1:处理技能启动
         this.addLaunchHandler(this.launch);
         //  意图2：处理技能结束
@@ -103,6 +104,7 @@ class Bot extends BaseBot {
         this.waitAnswer();
 
         let videoName = this.getSlot('videoname');
+        console.log(videoName);
         if (videoName) {
             let video = this.getDetailBy('video', 'title', videoName);
             let directives = this.getVideoPlay(video.id);
@@ -185,6 +187,7 @@ class Bot extends BaseBot {
         let token = context.template.token ? context.template.token : '';
         let page = token.page ? token.page : '';
         let index = this.getSlot('index');
+        console.log(index);
         //  index从1开始
         //  let audioPlayerContext = this.request.getAudioPlayerContext();
         //  let videoPlayerContext = this.request.getVideoPlayerContext();
@@ -434,6 +437,7 @@ class Bot extends BaseBot {
 
         //  定义RenderTemplate指令
         let directive = new RenderTemplate(listTemplate);
+        console.log(directive)
         return directive;
     }
 

@@ -17,17 +17,19 @@ app.head('/', (req, res) => {
 });
 
 app.post('/', (req, res) => {
-    //console.log('Hello World1!1');
+    console.log('Hello World1!1');
     req.rawBody = '';
 
     req.setEncoding('utf8');
     req.on('data', chunk => {
         req.rawBody += chunk;
     });
-    //console.log('Hello World1!2');
+
 
     req.on('end', () => {
         let b = new Bot(JSON.parse(req.rawBody));
+
+        
         // 开启签名认证
         // 本地运行可以先注释
         //b.initCertificate(req.headers, req.rawBody).enableVerifyRequestSign();
@@ -38,5 +40,5 @@ app.post('/', (req, res) => {
     });
 }).listen(8016);
 
-console.log('listen 8017');
+console.log('listen 8016');
    console.log('Hello World1!3');
