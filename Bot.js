@@ -108,6 +108,7 @@ class Bot extends BaseBot {
         console.log(videoName);
         if (videoName) {
             let video = this.getDetailBy('video', 'title', videoName);
+              console.log(video.title);
             let directives = this.getVideoPlay(video.id);
             if (directives) {
                 return {
@@ -149,6 +150,7 @@ class Bot extends BaseBot {
         console.log(audioName);
         if (audioName) {
             let audio = this.getDetailBy('audio', 'title', audioName);
+             console.log(audio.title);
             let directives = this.getAudioPlay(audio.id);
             if (directives) {
                 return {
@@ -257,7 +259,7 @@ class Bot extends BaseBot {
     pauseIntent() {
         this.waitAnswer();
         this.setExpectSpeech(false);
-
+        console.log("pause now");
         let audioPlayerContext = this.request.getAudioPlayerContext();
         let videoPlayerContext = this.request.getVideoPlayerContext();
 
@@ -287,7 +289,7 @@ class Bot extends BaseBot {
      */
     continueIntent() {
         this.waitAnswer();
-
+        consule.log("continue now");
         let audioPlayerContext = this.request.getAudioPlayerContext();
         let videoPlayerContext = this.request.getVideoPlayerContext();
 
@@ -317,6 +319,7 @@ class Bot extends BaseBot {
      */
     ScreenClickedEvent() {
         this.waitAnswer();
+        console.log("screen click now");
         let data = this.request.getData();
         console.log(index);
         let url = data.request.token ? data.request.token : '';
@@ -358,6 +361,7 @@ class Bot extends BaseBot {
      */
     audioPlaybackFinished(event) {
         this.waitAnswer();
+        console.log("audio finish now");
         this.setExpectSpeech(false);
         let audioToken = event.token ? event.token : '';
         if (audioToken.id && audioToken.index) {
@@ -378,6 +382,7 @@ class Bot extends BaseBot {
      */
     videoPlaybackNearlyFinished(event) {
         this.waitAnswer();
+        console.log("video nearly finished now");
         this.setExpectSpeech(false);
         let videoToken = event.token ? event.token : '';
 
@@ -395,6 +400,7 @@ class Bot extends BaseBot {
      * 默认事件
      */
     defaultEvent() {
+        console.log("default event now");
         this.waitAnswer();
         this.setExpectSpeech(false);
     }
@@ -405,7 +411,7 @@ class Bot extends BaseBot {
      * @return {RenderTemplate}
      */
     getHomeCard() {
-
+        console.log("get home card");
         let videoToken = {
             page: 'home',
             item: 'video'
@@ -451,6 +457,7 @@ class Bot extends BaseBot {
      * @return {Object}
      */
     getVideoCard() {
+        console.log("get video card");
         let listTemplate = new ListTemplate1();
         //  设置token
         let tokenArr = {
@@ -493,6 +500,7 @@ class Bot extends BaseBot {
      * @return {Object}
      */
     getAudioCard() {
+        console.log("get audio card");
         let listTemplate = new ListTemplate1();
         //  设置模板token
         let tokenArr = {
@@ -536,6 +544,7 @@ class Bot extends BaseBot {
      * @return {Object}
      */
     getPlayList(type) {
+        console.log("get play list");
         let list = require('./data');
 
         if (type === 'video') {
@@ -560,7 +569,7 @@ class Bot extends BaseBot {
      */
     getVideoPlay(id) {
         this.setExpectSpeech(false);
-
+        console.log("get video play id");
         let token = {
             type: 'video',
             id: id
@@ -589,6 +598,7 @@ class Bot extends BaseBot {
      * @return {Array}
      */
     getAudioPlay(id) {
+         console.log("get audio play id");
         this.setExpectSpeech(false);
 
         let token = {
@@ -661,6 +671,7 @@ class Bot extends BaseBot {
      */
     audioPlayStarted() {
         this.waitAnswer();
+         console.log("audio play start ");
     }
 
     //  视频开始播放事件
@@ -669,6 +680,7 @@ class Bot extends BaseBot {
      */
     videoPlayStarted() {
         this.waitAnswer();
+         console.log("video play start ");
     }
 
     /**
@@ -687,7 +699,9 @@ class Bot extends BaseBot {
      * sessionEndedRequest处理
      */
     sessionEndedRequest() {
+         console.log("session end ");
         this.endDialog();
+
     }
 }
 
