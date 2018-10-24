@@ -150,7 +150,7 @@ class Bot extends BaseBot {
         console.log(audioName);
         if (audioName) {
             let audio = this.getDetailBy('audio', 'title', audioName);
-             console.log(audio.title);
+             console.log(audio.id);
             let directives = this.getAudioPlay(audio.id);
             if (directives) {
                 return {
@@ -266,7 +266,7 @@ class Bot extends BaseBot {
         //  let audioToken = audioPlayerContext['token'] ? audioPlayerContext['token'] : '';
         //  let videoToken = videoPlayerContext['token'] ? videoPlayerContext['token'] : '';
 
-
+        console.log(audioPlayerContext);
         if (audioPlayerContext) {
             let directive = new AudioStop();
             return {
@@ -289,7 +289,7 @@ class Bot extends BaseBot {
      */
     continueIntent() {
         this.waitAnswer();
-        consule.log("continue now");
+        console.log("continue now");
         let audioPlayerContext = this.request.getAudioPlayerContext();
         let videoPlayerContext = this.request.getVideoPlayerContext();
 
@@ -599,6 +599,7 @@ class Bot extends BaseBot {
      */
     getAudioPlay(id) {
          console.log("get audio play id");
+         console.log(id);
         this.setExpectSpeech(false);
 
         let token = {
