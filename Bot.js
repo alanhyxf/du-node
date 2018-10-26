@@ -3,6 +3,7 @@
   * @author yelvye@baidu.com
   */
 const Bot = require('bot-sdk');
+let ConnUtils = require('./tools/users');
 
  
 const welcomeStr = '欢迎使用对诗李白，我会随机选择一句李白的诗，你来对下句。现在跟我说开始对诗吧！';
@@ -20,6 +21,8 @@ class InquiryBot extends Bot {
    constructor(postData) {
         super(postData);
 
+        console.log(users.getUserName(this.request.getUserId()))
+        
         this.addLaunchHandler(this.launch);
 
         this.addSessionEndedHandler(this.sessionEndedRequest);
@@ -105,6 +108,7 @@ class InquiryBot extends Bot {
 
         };
     }
+
 
 
 }
