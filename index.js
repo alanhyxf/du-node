@@ -7,29 +7,30 @@
  */
 
 const express = require('express');
-
 const InquiryBot = require('./Bot');
+var querystring = require('querystring');
 let app = express();
 
 // 探活请求
-app.head('/', (req, res) => {
+app.head('/node', (req, res) => {
     res.sendStatus(204);
 });
 
 app.post('/node', (req, res) => {
-
-    console.log('Hello World1!1');
     req.rawBody = '';
-
+    var body='';	
     req.setEncoding('utf8');
     req.on('data', chunk => {
         req.rawBody += chunk;
     });
 
-
     req.on('end', () => {
-        let b = new InquiryBot(JSON.parse(req.rawBody));
-
+	if (req.rawBody=='')
+	{
+		console.log('null post');
+	        return null;
+	}
+	let b = new InquiryBot(JSON.parse(req.rawBody)); 
         
         // 开启签名认证
         // 本地运行可以先注释

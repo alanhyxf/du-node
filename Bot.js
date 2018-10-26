@@ -13,7 +13,11 @@ const PoemList = ["悯农","将进酒"];
 
 
 class InquiryBot extends Bot {
-    constructor(postData) {
+    genToken(token) {
+        let buffer = new Buffer(token.toString());
+        return buffer.toString('base64');
+    } 
+   constructor(postData) {
         super(postData);
 
         this.addLaunchHandler(this.launch);
@@ -37,16 +41,13 @@ class InquiryBot extends Bot {
 
     launch() {
         this.waitAnswer();
-        let template = this.getHomeCard();
+//        let template = this.getHomeCard();
         let poemSelect = PoemList[Math.floor(Math.random() * 2)];
-        let speech = `欢迎使用对诗李白，我们选择了 ${server}`;
-        let reprompt = `没有听懂，可以直接说想对的诗，例如 ${server}`;
-        let hint = new Hint(poemSelect);
-
+        let speech = `欢迎使用对诗李白，我们选择了 ${poemSelect}`;
+        let reprompt = `没有听懂，可以直接说想对的诗，例如 ${poemSelect}`;
         return {
             outputSpeech: speech,
             reprompt: reprompt,
-            directives: [hint, template]
         };
     }
 
@@ -73,11 +74,11 @@ class InquiryBot extends Bot {
         //询问slot: 1-1
             this.nlu.ask('1-1');
             let speech="锄禾日当午";
-            let card = new TextCard('锄禾日当午');
+       //     let card = new TextCard('锄禾日当午');
             return {
-                card: card,
+         //       card: card,
                 outputSpeech: speech,
-                reprompt: reprompt,             
+                reprompt: speech,             
             };
         }
 
