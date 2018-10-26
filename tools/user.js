@@ -3,7 +3,7 @@
 let ConnUtils = require('./tools/ConnUtils');
 
 
-getUserName(userID)=Function getUserName(userID){
+var getUserName =function (userID){
 		
 			let mysql_conn = ConnUtils.get_mysql_client();
 
@@ -13,9 +13,9 @@ getUserName(userID)=Function getUserName(userID){
 				"WHERE (userID = ?) " +
 				"LIMIT 1 ";
 
-			let query_var = ['121'];
+			let query_var = userID;
 
-			var query = mysql_conn.query(query_str, query_var, function (err, rows, fields) {
+			var query = mysql_conn.query(query_str, query_var, function (err, results, fields) {
 				//if (err) throw err;
 				if (err) {
 					//throw err;
@@ -28,12 +28,12 @@ getUserName(userID)=Function getUserName(userID){
 					console.log(rows);
 					return results[0].name;
 				}
-			}
+			});
 
-}
+};
 
 
 
 module.exports = {
-    users: getUserName(userID),
+    getUserName: getUserName,
 };
