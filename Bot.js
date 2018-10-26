@@ -3,7 +3,7 @@
   * @author yelvye@baidu.com
   */
 const Bot = require('bot-sdk');
-let ConnUtils = require('./tools/users');
+let ConnUtils = require('./tools/ConnUtils');
 
  
 const welcomeStr = '欢迎使用对诗李白，我会随机选择一句李白的诗，你来对下句。现在跟我说开始对诗吧！';
@@ -16,16 +16,19 @@ const PoemList = ["悯农","将进酒"];
 class InquiryBot extends Bot {
     genToken(token) {
         let buffer = new Buffer(token.toString());
+
         return buffer.toString('base64');
     } 
    constructor(postData) {
         super(postData);
 
-        console.log(users.getUserName(this.request.getUserId()))
-        
+
+
         this.addLaunchHandler(this.launch);
 
         this.addSessionEndedHandler(this.sessionEndedRequest);
+
+        this.addIntentHandler('Regis', this.register);
 
         //悯农
         this.addIntentHandler('poem1', this.poem1Intent);
@@ -45,15 +48,59 @@ class InquiryBot extends Bot {
     launch() {
         this.waitAnswer();
 //        let template = this.getHomeCard();
-        let poemSelect = PoemList[Math.floor(Math.random() * 2)];
-        let speech = `欢迎使用对诗李白，我们选择了 ${poemSelect}`;
-        let reprompt = `没有听懂，可以直接说想对的诗，例如 ${poemSelect}`;
-        return {
-            outputSpeech: speech,
-            reprompt: reprompt,
-        };
+        let userid=this.request.getUserId();
+
+
+
+        return new Promise(function (resolve, reject) {
+            let mysql_conn = ConnUtils.get_mysql_client();
+            mysql_conn.query('select * from hy_users where (userid = ' + userid + ')',function (error, results, fields) {
+                if (typeof(results) != "undefined" && results.length > 0){
+                    resolve({
+                        //directives: [self.getTemplate1(results[0].name)],
+                        outputSpeech: '欢迎你' + results[0].name 
+                    });
+                }else{
+                    resolve({
+                        //directives: [self.getTemplate1(results[0].name)],
+                        outputSpeech: '你好，你叫什么名字？'
+                    });
+                }
+            });
+        });
+
+
     }
 
+
+    register(){
+        this.waitAnswer();
+
+        let userName = this.getSlot('username');
+        if (!userName) {
+            this.nlu.ask('username');
+            let card = new Bot.Card.TextCard('你叫什么名字？');
+            // 可以返回异步 Promise
+            return Promise.resolve({
+                card: card,
+                outputSpeech: '你叫什么名字？'
+            });
+        }
+    
+        let self = this;
+        let userId = this.request.getUserId();
+        let insertQuery = "INSERT INTO hy_users (userid, username, score) VALUES (' " + userId + "','" + userName + "','0')";
+        console.log(insertQuery);
+        return new Promise(function (resolve, reject) {
+            let mysql_conn = ConnUtils.get_mysql_client();
+            mysql_conn.query(insertQuery,function (error, results, fields) {
+                resolve({
+                    //directives: [self.getTemplate1(results)],
+                    outputSpeech: '你好' + userName + ' 设置你的目标吧'
+                });
+            });
+        });
+    }
 
     sessionEndedRequest() {
         console.log("session end ");
