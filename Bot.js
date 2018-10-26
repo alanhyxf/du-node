@@ -22,8 +22,6 @@ class InquiryBot extends Bot {
    constructor(postData) {
         super(postData);
 
-
-
         this.addLaunchHandler(this.launch);
 
         this.addSessionEndedHandler(this.sessionEndedRequest);
@@ -48,22 +46,30 @@ class InquiryBot extends Bot {
     launch() {
         this.waitAnswer();
 //        let template = this.getHomeCard();
+        let self=this;
         let userid=this.request.getUserId();
 
+	console.log('launch1:'+userid);
 
-
+	let query_str ="SELECT username " +
+				"FROM hy_users " +
+				"WHERE (userid = ?) " +
+				"LIMIT 1 ";
+       let query_var=userid;
         return new Promise(function (resolve, reject) {
             let mysql_conn = ConnUtils.get_mysql_client();
-            mysql_conn.query('select * from hy_users where (userid = ' + userid + ')',function (error, results, fields) {
-                if (typeof(results) != "undefined" && results.length > 0){
-                    resolve({
-                        //directives: [self.getTemplate1(results[0].name)],
-                        outputSpeech: '欢迎你' + results[0].name 
+            mysql_conn.query(query_str,query_var,function (error, results, fields) {
+                console.log('launch2'+results);
+		//if (typeof(results) != "undefined" && results.length > 0){
+                if(!error){
+		    resolve({
+                        directives: [self.getTemplate1(results[0].username)],
+                        outputSpeech: '欢迎你' + results[0].username 
                     });
                 }else{
                     resolve({
-                        //directives: [self.getTemplate1(results[0].name)],
-                        outputSpeech: '你好，你叫什么名字？'
+                        directives: [self.getTemplate1(results[0].name)],
+                        outputSpeech: '欢迎来到对诗李白。你还没登记账号呢吧。请发指令注册账号'
                     });
                 }
             });
@@ -73,10 +79,21 @@ class InquiryBot extends Bot {
     }
 
 
+    getTemplate1(text) {
+    	console.log(text);
+        let bodyTemplate = new Bot.Directive.Display.Template.BodyTemplate1();
+        bodyTemplate.setPlainTextContent(text);
+        let renderTemplate = new Bot.Directive.Display.RenderTemplate(bodyTemplate);
+        return renderTemplate;
+    }
+
+
+
     register(){
         this.waitAnswer();
-
+       let self=this;
         let userName = this.getSlot('username');
+	console.log('系统获得姓名'+userName);
         if (!userName) {
             this.nlu.ask('username');
             let card = new Bot.Card.TextCard('你叫什么名字？');

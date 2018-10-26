@@ -27,7 +27,7 @@ app.post('/node', (req, res) => {
     req.on('end', () => {
 	if (req.rawBody=='')
 	{
-		console.log('null post');
+		//console.log('null post');
 	        return null;
 	}
 	let b = new InquiryBot(JSON.parse(req.rawBody)); 
